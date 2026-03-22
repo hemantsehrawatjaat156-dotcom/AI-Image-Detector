@@ -3,16 +3,17 @@ import torch
 from torchvision import transforms
 from PIL import Image
 from models.model import get_model
+import gradio as gr
 
 app = Flask(__name__)
 
-# Load model
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = get_model(pretrained=False).to(device)
 model.load_state_dict(torch.load("weights/model.pth", map_location=device))
 model.eval()
 
-# Image transform
+
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -44,3 +45,12 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+def greet(name):
+    return "Hello " + name + "!!"
+    
+
+demo = gr.Interface(fn=greet, inputs="text", outputs="text")
+demo.launch()
+
