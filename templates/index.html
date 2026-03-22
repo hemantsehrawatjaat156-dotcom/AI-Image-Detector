@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Image Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Image Detector</h1>
+    <p class="subtitle">Upload an image to check if it's Real or Fake</p>
+
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <div class="upload-box">
+            <input type="file" name="image" required>
+        </div>
+        <button type="submit">Check Image</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            <h2>Result: {{ prediction }}</h2>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
