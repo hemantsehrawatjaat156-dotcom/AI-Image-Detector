@@ -1,5 +1,13 @@
+from pathlib import Path
+import sys
+
 import torch
 import torch.nn as nn
+
+# Allow running this file directly from the src folder.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from models.model import get_model
 from src.dataset import get_loaders
@@ -7,10 +15,12 @@ from src.utils import evaluate, train_one_epoch
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+DATA_DIR = PROJECT_ROOT / "data"
+WEIGHTS_DIR = PROJECT_ROOT / "weights"
 
 
 def main():
-    train_loader, val_loader, classes = get_loaders("data")
+    train_loader, val_loader, classes = get_loaders(DATA_DIR)
     print("Classes:", classes)
 
     images, labels = next(iter(train_loader))
@@ -30,7 +40,8 @@ def main():
 
         print(f"Epoch {epoch + 1}: Loss={loss:.4f}, Val Acc={acc:.4f}")
 
-    torch.save(model.state_dict(), "weights/model.pth")
+    WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
+    torch.save(model.state_dict(), WEIGHTS_DIR / "model.pth")
 
 
 if __name__ == "__main__":
